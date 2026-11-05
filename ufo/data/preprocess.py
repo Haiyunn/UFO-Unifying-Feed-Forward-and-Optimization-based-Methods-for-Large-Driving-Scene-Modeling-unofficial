@@ -17,7 +17,7 @@ Per scene ``<out>/<scene>/``::
                  lidar_count (O,F), cls (O,) [0 vehicle,1 pedestrian,2 cyclist]
 
 Usage:
-    python -m ufo.data.preprocess --root /mnt/data/dataset/notr/processed/training \
+    python -m ufo.data.preprocess --root data/waymo/processed/training \
         --split splits/waymo_ds.json --out cache/waymo_160x240 --workers 32
 """
 
@@ -197,7 +197,7 @@ def _orig_size(path: str):
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--root", default="/mnt/data/dataset/notr/processed/training")
+    ap.add_argument("--root", default="data/waymo/processed/training")
     ap.add_argument("--split", default="splits/waymo_ds.json")
     ap.add_argument("--out", default="cache/waymo_160x240")
     ap.add_argument("--height", type=int, default=160)

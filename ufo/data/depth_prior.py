@@ -16,7 +16,7 @@ Only a frame's *own* sweep is used, so the prior of a context frame carries no
 information about any target frame.
 
     python -m ufo.data.depth_prior --cache cache/waymo_160x240 --dataset waymo \
-        --root /mnt/data/dataset/notr/processed/training --scenes 016 017
+        --root data/waymo/processed/training --scenes 016 017
 """
 
 from __future__ import annotations
@@ -32,8 +32,8 @@ from PIL import Image
 
 from ufo.data import preprocess, preprocess_argoverse
 
-INFINIDEPTH_ROOT = "/mnt/data/why/InfiniDepth"
-INFINIDEPTH_CKPT = "/mnt/data/why/InfiniDepth/checkpoints/depth/infinidepth_depthsensor.ckpt"
+INFINIDEPTH_ROOT = "third_party/InfiniDepth"
+INFINIDEPTH_CKPT = "third_party/InfiniDepth/checkpoints/depth/infinidepth_depthsensor.ckpt"
 WORK_SCALE = 3
 
 
@@ -48,12 +48,12 @@ def dense_query_coord(h: int, w: int, device) -> torch.Tensor:
     return torch.stack((yy, xx), dim=-1).reshape(-1, 2)
 
 
-def load_infinidepth():
-    if INFINIDEPTH_ROOT not in sys.path:
-        sys.path.insert(0, INFINIDEPTH_ROOT)
+def load_infinidepth(repo_root: str = INFINIDEPTH_ROOT, checkpoint: str = INFINIDEPTH_CKPT):
+    if repo_root not in sys.path:
+        sys.path.insert(0, repo_root)
     from InfiniDepth.utils.model_utils import build_model
 
-    model = build_model("InfiniDepth_DepthSensor", model_path=INFINIDEPTH_CKPT, encoder="vitl16")
+    model = build_model("InfiniDepth_DepthSensor", model_path=checkpoint, encoder="vitl16")
     model.requires_grad_(False)
     model.eval()
     return model
@@ -118,8 +118,10 @@ def main() -> None:
     ap.add_argument("--dataset", choices=("waymo", "argoverse"), required=True)
     ap.add_argument("--root", required=True)
     ap.add_argument("--scenes", nargs="+", required=True)
+    ap.add_argument("--depth-repo", default=INFINIDEPTH_ROOT, help="cloned InfiniDepth repository")
+    ap.add_argument("--depth-ckpt", default=INFINIDEPTH_CKPT, help="InfiniDepth checkpoint")
     args = ap.parse_args()
-    model = load_infinidepth()
+    model = load_infinidepth(args.depth_repo, args.depth_ckpt)
     for s in args.scenes:
         t0 = time.time()
         msg = process_scene(model, os.path.join(args.cache, s), os.path.join(args.root, s), args.dataset,

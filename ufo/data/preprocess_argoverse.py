@@ -145,7 +145,7 @@ def process_scene(root: str, scene: str, out: str, hw) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--root", default="/mnt/data/dataset/argoverse/processed/training")
+    ap.add_argument("--root", default="data/argoverse/processed/training")
     ap.add_argument("--out", default="cache/argoverse_160x240")
     ap.add_argument("--height", type=int, default=160)
     ap.add_argument("--width", type=int, default=240)

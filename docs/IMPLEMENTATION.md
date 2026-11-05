@@ -9,7 +9,7 @@ weights) as of 2026-10-21, so everything here is written from the paper.
 
 | item | this repo | paper |
 |---|---|---|
-| dataset | Waymo NOTR processed (`/mnt/data/dataset/notr/processed/training`) | WOD |
+| dataset | Waymo NOTR processed (`data/waymo/processed/training`) | WOD |
 | split | **PointForward `splits/waymo_ds.json`: 60 train / 11 val scenes** | official WOD train/val |
 | cameras | front, front-left, front-right (0,1,2) | same |
 | resolution | 160 x 240 | same |

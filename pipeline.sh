@@ -1,10 +1,10 @@
 #!/bin/bash
 # Chain: wait for stage 1 -> evaluate it -> stage 2 (8 s fine-tune) -> evaluate -> scalability.
-# Launch detached:  setsid nohup bash pipeline.sh 6,7 > logs/pipeline.log 2>&1 < /dev/null &
-gpus=${1:-6,7}
+# Usage (activate your Python environment first):  bash pipeline.sh <gpus, e.g. 0,1>
+gpus=${1:-0,1}
 first=${gpus%%,*}
-cd /mnt/data/why/UFO
-source /root/miniconda3/bin/activate drivestudio
+cd "$(dirname "$0")"
+mkdir -p logs results
 export OMP_NUM_THREADS=4 HF_HUB_OFFLINE=1
 
 s1=runs/stage1_2s/ckpt_050000.pt

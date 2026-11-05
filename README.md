@@ -35,10 +35,18 @@ Python 3.10+、PyTorch 2.x（CUDA）、[gsplat](https://github.com/nerfstudio-pr
 
 ## 使用
 
-数据为 Waymo NOTR（[DriveStudio](https://github.com/ziyc/drivestudio) 预处理格式），160×240，3 个前视相机。**脚本与配置中写死了作者服务器上的路径（如 `/mnt/data/...`），使用前请改为本地路径。**
+数据为 Waymo NOTR（[DriveStudio](https://github.com/ziyc/drivestudio) 预处理格式），160×240，3 个前视相机。所有路径都通过命令行参数传入，默认值相对仓库根目录（`data/waymo/processed/training`、`data/argoverse/processed/training`、`third_party/InfiniDepth`）。
 
 ```bash
-# 阶段 1：2 s 序列训练
+# 1. 预处理成 160x240 缓存（cache/waymo_160x240、cache/argoverse_160x240）
+python -m ufo.data.preprocess --root /path/to/waymo/processed/training
+bash preprocess_argo.sh /path/to/argoverse/processed/training
+# 2. 深度先验（可选，v2 配置使用）
+python -m ufo.data.depth_prior --cache cache/waymo_160x240 --dataset waymo \
+    --root /path/to/waymo/processed/training --scenes 016 017 \
+    --depth-repo /path/to/InfiniDepth --depth-ckpt /path/to/infinidepth_depthsensor.ckpt
+# 训练脚本只读取缓存（配置中的 cache_root），不再需要原始数据路径
+# 阶段 1：2 s 序列训练（或 bash launch.sh configs/stage1_2s.yaml 0,1 29500）
 torchrun --nproc_per_node 2 -m scripts.train --config configs/stage1_2s.yaml
 # 阶段 2：8 s 序列微调
 torchrun --nproc_per_node 2 -m scripts.train --config configs/stage2_8s.yaml --init runs/stage1_2s/ckpt_latest.pt
