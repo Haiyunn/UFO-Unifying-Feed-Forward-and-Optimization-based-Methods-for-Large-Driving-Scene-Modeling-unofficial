@@ -1,0 +1,33 @@
+# Stage 1: 2 s sequences (4 context steps), paper Sec. 4.1 "first trained with 2s sequences".
+seed: 0
+output: runs/stage1_2s
+data:
+  cache_root: cache/waymo_160x240
+  split_file: splits/waymo_ds.json
+  seq_frames: 20
+  ctx_stride: 5
+  num_target: 4
+model:
+  height: 160
+  width: 240
+  num_cams: 3
+  patch: 8
+  dim: 768
+  depth: 12
+  heads: 12
+  visible_k: 3600
+  max_objects: 32
+  gaussians_per_token: 16
+  grad_checkpoint: true
+train:
+  steps: 50000
+  batch_size: 4          # per GPU
+  lr: 1.0e-4
+  weight_decay: 0.05
+  warmup_steps: 2000
+  lpips_after: 2000
+  grad_clip: 1.0
+  num_workers: 6
+  log_every: 20
+  save_every: 500
+  keep_every: 5000

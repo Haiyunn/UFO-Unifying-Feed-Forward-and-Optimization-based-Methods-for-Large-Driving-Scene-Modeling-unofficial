@@ -1,0 +1,37 @@
+data:
+  ctx_stride: 5
+  num_target: 4
+  seq_frames: 20
+  sources:
+  - cache_root: cache/waymo_160x240
+    name: waymo
+    split_file: splits/overfit_016.json
+model:
+  depth: 12
+  depth_prior: true
+  dim: 768
+  gaussians_per_token: 64
+  grad_checkpoint: true
+  heads: 12
+  height: 160
+  max_objects: 32
+  num_cams: 3
+  patch: 8
+  pixel_aligned: true
+  prior_residual: 1.0
+  visible_k: 3600
+  width: 240
+output: runs/_smoke_v2
+seed: 0
+train:
+  batch_size: 2
+  grad_clip: 1.0
+  keep_every: 5000
+  log_every: 1
+  lpips_after: 0
+  lr: 0.0001
+  num_workers: 2
+  save_every: 1000
+  steps: 4
+  warmup_steps: 1
+  weight_decay: 0.05

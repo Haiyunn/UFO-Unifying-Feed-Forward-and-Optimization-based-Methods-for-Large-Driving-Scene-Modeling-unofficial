@@ -1,0 +1,9 @@
+cache/
+runs/
+results/
+logs/
+*.pt
+*.npy
+*.npz
+__pycache__/
+docs/project-control/.write.lock
